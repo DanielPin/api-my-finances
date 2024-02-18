@@ -1,3 +1,4 @@
+import { Role } from '@auth/enums/role.enum';
 import * as moment from 'moment-timezone';
 import {
   Column,
@@ -7,7 +8,6 @@ import {
   UpdateDateColumn,
   ValueTransformer,
 } from 'typeorm';
-import { Role } from '../../auth/enums/role.enum';
 
 const dateTransformer: ValueTransformer = {
   from: (dbValue: Date): string => {
@@ -46,7 +46,4 @@ export class User {
 
   @Column({ name: 'role', type: 'enum', enum: Role })
   role: Role;
-
-  @Column({ name: 'iv', nullable: false })
-  iv: string;
 }

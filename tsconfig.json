@@ -16,6 +16,21 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "resolveJsonModule": true,
+    "paths": {
+      "@auth/*":[
+        "./src/modules/auth/*"
+      ],
+      "@user/*":[
+        "./src/modules/user/*"
+      ],
+      "@health/*":[
+        "./src/modules/health/*"
+      ],
+      "@card/*":[
+        "./src/modules/card/*"
+      ]
+    }
   }
 }

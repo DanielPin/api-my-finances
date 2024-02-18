@@ -1,9 +1,14 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@user/entity/user.entity';
+import { UserService } from '@user/services/user.service';
 import * as bcrypt from 'bcrypt';
-import { User } from 'src/modules/user/entity/user.entity';
-import { UserService } from 'src/modules/user/user.service';
 import { ILogin } from '../interfaces/login.interface';
 import { IToken } from '../interfaces/token.interface';
 
@@ -16,17 +21,21 @@ export class AuthService {
   ) {}
 
   async validateUser(dataLogin: ILogin): Promise<IToken> {
-    const user: User = await this.userService.getUser(dataLogin.login);
-    const isMatch: boolean = await bcrypt.compare(
-      dataLogin.password,
-      user.password,
-    );
+    try {
+      const user: User = await this.userService.getUser(dataLogin.login);
+      const isMatch: boolean = await bcrypt.compare(
+        dataLogin.password,
+        user.password,
+      );
 
-    if (!isMatch) {
-      throw new UnauthorizedException('Invalid login or password');
+      if (!isMatch) {
+        throw new UnauthorizedException('Invalid login or password');
+      }
+
+      return this.jwtToken(user);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    return this.jwtToken(user);
   }
 
   private async jwtToken(user: User): Promise<IToken> {

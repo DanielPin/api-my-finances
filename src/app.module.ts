@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostgresConfigService } from './configs/postgres.config.service';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/user/user.module';
+import { UserModule } from './modules/user/user.module';
+import { HealthModule } from './modules/health/health.module';
+import { CardModule } from './modules/card/card.module';
 
+const configService = new ConfigService();
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
+    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -16,6 +20,25 @@ import { UsersModule } from './modules/user/user.module';
       useClass: PostgresConfigService,
       inject: [PostgresConfigService],
     }),
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        privateKey: configService
+          .get<string>('PRIVATE_KEY')
+          .split(String.raw`\n`)
+          .join('\n'),
+        publicKey: configService
+          .get<string>('PUBLIC_KEY')
+          .split(String.raw`\n`)
+          .join('\n'),
+        signOptions: {
+          algorithm: 'RS256',
+          expiresIn: '1d',
+        },
+      }),
+      global: true,
+    }),
+    HealthModule,
+    CardModule,
   ],
 })
 export class AppModule {}
