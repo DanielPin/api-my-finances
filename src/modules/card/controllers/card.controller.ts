@@ -12,6 +12,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
   UseGuards,
@@ -43,7 +44,7 @@ export class CardController {
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
-  async getCard(@Param('id') id: string): Promise<Card> {
+  async getCard(@Param('id', new ParseUUIDPipe()) id: string): Promise<Card> {
     const card: Card = await this.cardService.getCard(id);
     return card;
   }
@@ -53,7 +54,7 @@ export class CardController {
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() data: updateCardDTO,
   ): Promise<Card> {
     const card: Card = await this.cardService.udpateCard(id, data);
