@@ -1,7 +1,7 @@
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidationArguments,
+  ValidationOptions,
+  registerDecorator,
 } from 'class-validator';
 
 export function IsNotEmptyString(validationOptions?: ValidationOptions) {
@@ -12,13 +12,12 @@ export function IsNotEmptyString(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: any, args: ValidationArguments): boolean {
           return typeof value === 'string' && value.trim().length > 0;
         },
-        defaultMessage(args: ValidationArguments) {
-          // Personalize a mensagem de erro aqui
-          return 'O campo ' + args.property + ' não pode estar vazio.';
-        }
+        defaultMessage(args: ValidationArguments): string {
+          return 'The field ' + args.property + ' cannot be empty.';
+        },
       },
     });
   };

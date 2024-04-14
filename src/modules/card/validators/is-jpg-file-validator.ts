@@ -1,7 +1,7 @@
 import {
-  registerDecorator,
-  ValidationOptions,
   ValidationArguments,
+  ValidationOptions,
+  registerDecorator,
 } from 'class-validator';
 
 export function IsJpgFile(validationOptions?: ValidationOptions) {
@@ -12,12 +12,11 @@ export function IsJpgFile(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: any, args: ValidationArguments): boolean {
           return typeof value === 'string' && value.endsWith('.jpg');
         },
-        defaultMessage(args: ValidationArguments) {
-          // Personalize a mensagem de erro aqui
-          return 'O campo ' + args.property + ' deve ser um arquivo .jpg.';
+        defaultMessage(args: ValidationArguments): string {
+          return 'Fiels ' + args.property + ' must be a .jpg file.';
         },
       },
     });

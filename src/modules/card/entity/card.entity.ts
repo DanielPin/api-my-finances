@@ -1,8 +1,9 @@
 import { IsJpgFile } from '@card/validators/is-jpg-file-validator';
 import { IsNotEmptyString } from '@card/validators/not-empty-string-validator';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 import * as moment from 'moment-timezone';
 import {
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -23,7 +24,7 @@ const dateTransformer: ValueTransformer = {
 @Entity({ name: 'Card' })
 export class Card {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @IsString()
   @IsNotEmptyString()
@@ -41,4 +42,9 @@ export class Card {
 
   @UpdateDateColumn({ name: 'updated_at', transformer: dateTransformer })
   updatedAt: string;
+
+  @BeforeUpdate()
+  updateDate() {
+    this.updatedAt = moment().tz('America/Sao_Paulo').format();
+  }
 }
