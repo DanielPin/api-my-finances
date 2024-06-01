@@ -21,10 +21,12 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredRoles: Role[] = this.reflector.getAllAndOverride<Role[]>(
-      ROLES_KEY,
-      [context.getHandler(), context.getClass()],
-    );
+    const requiredRoles: Role[] =
+      this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]) || [];
+
     const request = context.switchToHttp().getRequest();
     const token: string = this.extractTokenFromHeader(request);
     if (!token) {
@@ -40,6 +42,7 @@ export class AuthGuard implements CanActivate {
       request['user'] = payload;
 
       if (
+        requiredRoles.length > 0 &&
         !requiredRoles.some(
           (role: Role): boolean => payload.roles?.includes(role),
         )

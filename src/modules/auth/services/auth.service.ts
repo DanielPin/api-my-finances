@@ -22,7 +22,7 @@ export class AuthService {
 
   async validateUser(dataLogin: ILogin): Promise<IToken> {
     try {
-      const user: User = await this.userService.getUser(dataLogin.login);
+      const user: User = await this.userService.getUserByLogin(dataLogin.login);
       const isMatch: boolean = await bcrypt.compare(
         dataLogin.password,
         user.password,
@@ -40,7 +40,7 @@ export class AuthService {
 
   private async jwtToken(user: User): Promise<IToken> {
     const payload = {
-      username: user.fullName,
+      id: user.id,
       sub: user.fullName,
       roles: user.role,
     };
