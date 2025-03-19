@@ -47,8 +47,6 @@ export class UserController {
   }
 
   @Post('/create')
-  @Roles(Role.ADMIN)
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async createUser(@Body() user: UserCreateDTO): Promise<UserDTO> {
     return this.userService.createUser(user);

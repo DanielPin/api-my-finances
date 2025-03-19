@@ -2,6 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
 import { ILogin } from '../interfaces/login.interface';
 import { IToken } from '../interfaces/token.interface';
 import { AuthService } from '../services/auth.service';
+const axios = require('axios');
 
 @Controller('auth')
 export class AuthController {
@@ -9,6 +10,11 @@ export class AuthController {
 
   @Get()
   public async login(@Body() login: ILogin): Promise<IToken> {
+    
+
+ 
+    
+
     return this.authService.validateUser(login);
   }
 }

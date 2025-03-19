@@ -42,7 +42,9 @@ export class UserService {
   }
 
   async createUser(user: UserCreateDTO): Promise<UserDTO> {
-    const existingUser: User = await this.findUserBy(UserField.CPF, user.cpf);
+    const existingUser: User = await this.userRepository.findOne({
+      where: { cpf: user.cpf },
+    });
 
     if (existingUser) {
       throw new BadRequestException('CPF already registered');
@@ -132,7 +134,6 @@ export class UserService {
     field: UserField,
     value: number | string,
   ): Promise<User> {
-    console.log('field', field);
     const searchCriteria = { [field]: value };
     const existingUser: User = await this.userRepository.findOne({
       where: searchCriteria,
